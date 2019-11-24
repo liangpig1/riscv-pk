@@ -3,6 +3,8 @@
 #include "mtrap.h"
 #include "bits.h"
 #include "config.h"
+#include "trap.S"
+
   .data
   .align 6
 trap_table:
@@ -29,7 +31,7 @@ trap_table:
   .word handle_pmp_ipi
 #endif
 
-enclave_trap_table:
+/*enclave_trap_table:
   .word bad_trap
   .word pmp_trap
   .word illegal_insn_trap
@@ -50,7 +52,7 @@ enclave_trap_table:
   .globl reset_vector
   .globl switch_vector_enclave
   .globl switch_vector_host
-
+*/
 reset_vector:
   j do_reset
 
