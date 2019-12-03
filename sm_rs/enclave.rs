@@ -10,6 +10,7 @@ use crate::bindings::*;
 use crate::cpu;
 use crate::pmp;
 use crate::sm;
+use crate::mprv::{self, sptr};
 use util::ctypes::*;
 use util::insert_field;
 
@@ -230,16 +231,16 @@ unsafe fn clean_enclave_memory(utbase: usize, utsize: usize) {
  */
 unsafe fn copy_word_to_host(
     _enclave: &mut Enclave,
-    dest_ptr: *mut usize,
-    value: usize,
+    dest_ptr: sptr<u64>,
+    value: u64,
 ) -> Result<(), enclave_ret_code> {
     // lock here for functional safety
-    let region_overlap = pmp::detect_region_overlap(dest_ptr as usize, size_of::<usize>());
+    let region_overlap = pmp::detect_region_overlap(dest_ptr.raw(), size_of::<usize>());
     if region_overlap {
         return Err(ENCLAVE_REGION_OVERLAPS as enclave_ret_code);
     }
 
-    *dest_ptr = value;
+    mprv::copy_out(dest_ptr, &value);
     Ok(())
 }
 
@@ -556,7 +557,9 @@ pub extern "C" fn create_enclave(create_args: keystone_sbi_create) -> enclave_re
     let size = create_args.epm_region.size;
     let utbase = create_args.utm_region.paddr;
     let utsize = create_args.utm_region.size;
-    let eidptr = create_args.eid_pptr as *mut usize;
+    let eidptr = unsafe {
+        sptr::<u64>::from_vaddr(create_args.eid_vptr as usize)
+    };
 
     /* Runtime parameters */
     if !is_create_args_valid(&create_args) {
@@ -655,7 +658,7 @@ pub extern "C" fn create_enclave(create_args: keystone_sbi_create) -> enclave_re
 
     /* EIDs are unsigned int in size, copy via simple copy */
     unsafe {
-        let ret = copy_word_to_host(&mut enc, eidptr, eid);
+        let ret = copy_word_to_host(&mut enc, eidptr, eid as u64);
         if let Err(ret) = ret {
             return ret as enclave_ret_code;
         }

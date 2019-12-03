@@ -3,6 +3,7 @@
 // All Rights Reserved. See LICENSE for license details.
 //------------------------------------------------------------------------------
 #include "enclave.h"
+#include "enclave_copy.h"
 #include "pmp.h"
 #include "page.h"
 #include "cpu.h"
@@ -224,8 +225,9 @@ static enclave_ret_code copy_word_to_host(uintptr_t* dest_ptr, uintptr_t value)
   spinlock_lock(&encl_lock);
   region_overlap = pmp_detect_region_overlap_atomic((uintptr_t)dest_ptr,
                                                 sizeof(uintptr_t));
-  if(!region_overlap)
-    *dest_ptr = value;
+  if(!region_overlap) {
+    copy8_from_sm((uint64_t *)dest_ptr, (uint64_t *)&value);
+  }
   spinlock_unlock(&encl_lock);
 
   if(region_overlap)

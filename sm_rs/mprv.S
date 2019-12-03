@@ -21,23 +21,23 @@ copy64_to_sm:
     addi sp, sp, -8
     sd ra, 0(sp)
     jal set_mprv
-    ld t0, 0x00(a0)
-    ld t1, 0x08(a0)
-    ld t2, 0x10(a0)
-    ld t3, 0x18(a0)
-    ld t4, 0x20(a0)
-    ld t5, 0x28(a0)
-    ld t6, 0x30(a0)
-    ld a6, 0x38(a0)
+    ld t0, 0x00(a1)
+    ld t1, 0x08(a1)
+    ld t2, 0x10(a1)
+    ld t3, 0x18(a1)
+    ld t4, 0x20(a1)
+    ld t5, 0x28(a1)
+    ld t6, 0x30(a1)
+    ld a6, 0x38(a1)
     jal unset_mprv
-    sd t0, 0x00(a1)
-    sd t1, 0x08(a1)
-    sd t2, 0x10(a1)
-    sd t3, 0x18(a1)
-    sd t4, 0x20(a1)
-    sd t5, 0x28(a1)
-    sd t6, 0x30(a1)
-    sd a6, 0x38(a1)
+    sd t0, 0x00(a0)
+    sd t1, 0x08(a0)
+    sd t2, 0x10(a0)
+    sd t3, 0x18(a0)
+    sd t4, 0x20(a0)
+    sd t5, 0x28(a0)
+    sd t6, 0x30(a0)
+    sd a6, 0x38(a0)
     ld ra, 0(sp)
     addi sp, sp, 8
     jr ra
@@ -49,9 +49,9 @@ copy8_to_sm:
     addi sp, sp, -8
     sd ra, 0(sp)
     jal set_mprv
-    ld t0, 0x00(a0)
+    ld t0, 0x00(a1)
     jal unset_mprv
-    sd t0, 0x00(a1)
+    sd t0, 0x00(a0)
     ld ra, 0(sp)
     addi sp, sp, 8
     jr ra
@@ -63,9 +63,9 @@ copy1_to_sm:
     addi sp, sp, -8
     sd ra, 0(sp)
     jal set_mprv
-    lb t0, 0x00(a0)
+    lb t0, 0x00(a1)
     jal unset_mprv
-    sb t0, 0x00(a1)
+    sb t0, 0x00(a0)
     ld ra, 0(sp)
     addi sp, sp, 8
     jr ra
@@ -76,23 +76,23 @@ copy64_from_sm:
     # a1: src
     addi sp, sp, -8
     sd ra, 0(sp)
-    ld t0, 0x00(a0)
-    ld t1, 0x08(a0)
-    ld t2, 0x10(a0)
-    ld t3, 0x18(a0)
-    ld t4, 0x20(a0)
-    ld t5, 0x28(a0)
-    ld t6, 0x30(a0)
-    ld a6, 0x38(a0)
+    ld t0, 0x00(a1)
+    ld t1, 0x08(a1)
+    ld t2, 0x10(a1)
+    ld t3, 0x18(a1)
+    ld t4, 0x20(a1)
+    ld t5, 0x28(a1)
+    ld t6, 0x30(a1)
+    ld a6, 0x38(a1)
     jal set_mprv
-    sd t0, 0x00(a1)
-    sd t1, 0x08(a1)
-    sd t2, 0x10(a1)
-    sd t3, 0x18(a1)
-    sd t4, 0x20(a1)
-    sd t5, 0x28(a1)
-    sd t6, 0x30(a1)
-    sd a6, 0x38(a1)
+    sd t0, 0x00(a0)
+    sd t1, 0x08(a0)
+    sd t2, 0x10(a0)
+    sd t3, 0x18(a0)
+    sd t4, 0x20(a0)
+    sd t5, 0x28(a0)
+    sd t6, 0x30(a0)
+    sd a6, 0x38(a0)
     jal unset_mprv
     ld ra, 0(sp)
     addi sp, sp, 8
@@ -104,9 +104,9 @@ copy8_from_sm:
     # a1: src
     addi sp, sp, -8
     sd ra, 0(sp)
-    ld t0, 0x00(a0)
+    ld t0, 0x00(a1)
     jal set_mprv
-    sd t0, 0x00(a1)
+    sd t0, 0x00(a0)
     jal unset_mprv
     ld ra, 0(sp)
     addi sp, sp, 8
@@ -118,9 +118,9 @@ copy1_from_sm:
     # a1: src
     addi sp, sp, -8
     sd ra, 0(sp)
-    lb t0, 0x00(a0)
+    lb t0, 0x00(a1)
     jal set_mprv
-    sb t0, 0x00(a1)
+    sb t0, 0x00(a0)
     jal unset_mprv
     ld ra, 0(sp)
     addi sp, sp, 8
