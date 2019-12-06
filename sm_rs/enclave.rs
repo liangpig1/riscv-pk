@@ -249,8 +249,7 @@ unsafe fn copy_word_to_host(
         Err(encl_ret!(REGION_OVERLAPS))?;
     }
 
-    mprv::copy_out(dest_ptr, &value);
-    Ok(())
+    mprv::copy_out(dest_ptr, &value).map_err(|_| encl_ret!(ILLEGAL_ARGUMENT))
 }
 
 // TODO: This function is externally used by sm-sbi.c.
