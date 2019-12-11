@@ -225,15 +225,18 @@ static enclave_ret_code copy_word_to_host(uintptr_t* dest_ptr, uintptr_t value)
   spinlock_lock(&encl_lock);
   region_overlap = pmp_detect_region_overlap_atomic((uintptr_t)dest_ptr,
                                                 sizeof(uintptr_t));
+
+  enclave_ret_code ret = ENCLAVE_REGION_OVERLAPS;
+
   if(!region_overlap) {
-    copy8_from_sm((uint64_t *)dest_ptr, (uint64_t *)&value);
+    int err = copy8_from_sm((uint64_t *)dest_ptr, (uint64_t *)&value);
+    if (!err) {
+      ret = ENCLAVE_SUCCESS;
+    }
   }
   spinlock_unlock(&encl_lock);
 
-  if(region_overlap)
-    return ENCLAVE_REGION_OVERLAPS;
-  else
-    return ENCLAVE_SUCCESS;
+  return ret;
 }
 
 // TODO: This function is externally used by sm-sbi.c.
@@ -457,9 +460,7 @@ enclave_ret_code create_enclave(struct keystone_sbi_create create_args)
     goto free_platform;
 
   /* EIDs are unsigned int in size, copy via simple copy */
-  copy_word_to_host((uintptr_t*)eidptr, (uintptr_t)eid);
-
-  return ENCLAVE_SUCCESS;
+  return copy_word_to_host((uintptr_t*)eidptr, (uintptr_t)eid);
 
 free_platform:
   platform_destroy_enclave(&enclaves[eid]);
